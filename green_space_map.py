@@ -1,106 +1,55 @@
 import pandas as pd
-from datetime import datetime
+import folium
+from folium.plugins import MarkerCluster
 
-# Sample data for Stop #1 (Lansdowne Park) 
+# Step 1: Create the DataFrame with your data
 data = {
-    'Time': ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
-    'Traffic Count #1': [21, 13, 11, 7, 6, 1, 12, 3, 1],
-    'Traffic Count #2': [40, 11, 0, 2, 11, 4, 16, 6, 16],
-    'Pedestrian Count #1': [3, 7, 4, 2, 2, 3, 3, 2, 3],
-    'Pedestrian Count #2': [2, 7, 0, 4, 1, 3, 0, 4, 2]
+    "Location": ["Stop #1 Lansdowne Park"] * 12,
+    "Traffic Count": [61, 24, 11, 9, 17, 5, 28, 9, 1, 14, 25, 15],
+    "Longitude": [-75.68580531, -75.68068081, -75.68610983, -75.68449478, 
+                  -75.6796243, -75.68421071, -75.6780816, -75.67975324, 
+                  -75.68355528, -75.68651711, -75.6783432, -75.67955396],
+    "Latitude": [45.3987385, 45.39891803, 45.39938252, 45.39934569, 
+                 45.3979209, 45.40008528, 45.4005321, 45.40002445, 
+                 45.40011895, 45.39976627, 45.4016608, 45.40077915]
 }
 
-# Create DataFrame
 df = pd.DataFrame(data)
 
-# Remove rows with NaN values
-df.dropna(inplace=True)
+# Step 2: Create the map centered around the average latitude and longitude
+m = folium.Map(location=[df['Latitude'].mean(), df['Longitude'].mean()], zoom_start=15)
 
-# Define color ranges for traffic and pedestrian counts
-def get_traffic_color(count):
-    if count < 5:
-        return 'lightgreen'
-    elif count < 15:
-        return 'yellow'
-    elif count < 30:
-        return 'orange'
-    else:
-        return 'red'
+# Step 3: Create a MarkerCluster to group nearby markers
+marker_cluster = MarkerCluster().add_to(m)
 
-def get_pedestrian_color(count):
-    if count < 5:
-        return 'lightblue'
-    elif count < 10:
-        return 'blue'
-    elif count < 20:
-        return 'darkblue'
-    else:
-        return 'navy'
+# Step 4: Add markers to the map with traffic count as popup and color coding based on traffic count
+for idx, row in df.iterrows():
+    traffic_count = row['Traffic Count']
+    color = 'green' if traffic_count < 10 else 'orange' if traffic_count < 20 else 'red'  # Color based on traffic count
+    folium.Marker(
+        location=[row['Latitude'], row['Longitude']],
+        popup=f"Traffic Count: {traffic_count}",
+        icon=folium.Icon(color=color)
+    ).add_to(marker_cluster)
 
-# Create HTML structure with a table
-html_content = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lansdowne Park Stop #1 Counts</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        table, th, td { border: 1px solid black; }
-        th, td { padding: 10px; text-align: center; }
-        th { background-color: #f2f2f2; }
-        .legend { margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <h2>Lansdowne Park Stop #1 Traffic and Pedestrian Counts</h2>
-    <table>
-        <tr>
-            <th>Time</th>
-            <th>Traffic Count #1</th>
-            <th>Traffic Count #2</th>
-            <th>Pedestrian Count #1</th>
-            <th>Pedestrian Count #2</th>
-        </tr>
+# Step 5: Add a custom legend for the map
+legend_html = """
+<div style="position: fixed; 
+            bottom: 30px; left: 30px; width: 200px; height: 120px; 
+            background-color: white; border:2px solid grey; z-index:9999;
+            font-size: 14px; font-family: Arial, sans-serif; padding: 10px;">
+    <b>Traffic Count Legend</b><br>
+    <i style="background-color:green; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Low (0-10)<br>
+    <i style="background-color:orange; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Medium (11-20)<br>
+    <i style="background-color:red; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> High (21+)<br>
+</div>
 """
 
-# Add data to the HTML table with color coding
-for index, row in df.iterrows():
-    html_content += f"""
-        <tr>
-            <td>{row['Time']}</td>
-            <td style="background-color: {get_traffic_color(row['Traffic Count #1'])};">{row['Traffic Count #1']}</td>
-            <td style="background-color: {get_traffic_color(row['Traffic Count #2'])};">{row['Traffic Count #2']}</td>
-            <td style="background-color: {get_pedestrian_color(row['Pedestrian Count #1'])};">{row['Pedestrian Count #1']}</td>
-            <td style="background-color: {get_pedestrian_color(row['Pedestrian Count #2'])};">{row['Pedestrian Count #2']}</td>
-        </tr>
-    """
+# Add the legend to the map
+m.get_root().html.add_child(folium.Element(legend_html))
 
-html_content += """
-    </table>
+# Step 6: Save the map to an HTML file
+m.save('traffic_count_map_with_legend.html')
 
-    <div class="legend">
-        <h3>Legend</h3>
-        <p><b>Traffic Count #1 and #2:</b></p>
-        <p><span style="background-color: lightgreen;">&#9632;</span> Low (0-5)</p>
-        <p><span style="background-color: yellow;">&#9632;</span> Moderate (6-14)</p>
-        <p><span style="background-color: orange;">&#9632;</span> High (15-29)</p>
-        <p><span style="background-color: red;">&#9632;</span> Very High (30+)</p>
-
-        <p><b>Pedestrian Count #1 and #2:</b></p>
-        <p><span style="background-color: lightblue;">&#9632;</span> Low (0-5)</p>
-        <p><span style="background-color: blue;">&#9632;</span> Moderate (6-9)</p>
-        <p><span style="background-color: darkblue;">&#9632;</span> High (10-19)</p>
-        <p><span style="background-color: navy;">&#9632;</span> Very High (20+)</p>
-    </div>
-</body>
-</html>
-"""
-
-# Write the HTML content to a file
-with open("lansdowne_park_stop_1.html", "w") as file:
-    file.write(html_content)
-
-print("HTML file 'lansdowne_park_stop_1.html' has been generated.")
+# Print a message to indicate that the map has been saved
+print("Map has been saved as 'traffic_count_map_with_legend.html'.")
