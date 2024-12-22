@@ -28,8 +28,8 @@ for idx, row in df.iterrows():
     color = 'green' if traffic_count < 10 else 'orange' if traffic_count < 20 else 'red'  # Color based on traffic count
     folium.Marker(
         location=[row['Latitude'], row['Longitude']],
-        popup=f"Traffic Count: {traffic_count}",
-        icon=folium.Icon(color=color)
+        popup=f"<b>Traffic Count: {traffic_count}</b>",  # Bold font for popup
+        icon=folium.Icon(color=color, icon='none')  # Remove the default icon
     ).add_to(marker_cluster)
 
 # Step 5: Add a custom legend for the map
@@ -37,7 +37,7 @@ legend_html = """
 <div style="position: fixed; 
             bottom: 30px; left: 30px; width: 200px; height: 120px; 
             background-color: white; border:2px solid grey; z-index:9999;
-            font-size: 14px; font-family: Arial, sans-serif; padding: 10px;">
+            font-size: 16px; font-family: 'Helvetica', sans-serif; padding: 10px;">
     <b>Traffic Count Legend</b><br>
     <i style="background-color:green; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Low (0-10)<br>
     <i style="background-color:orange; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Medium (11-20)<br>
