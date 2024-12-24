@@ -5,7 +5,7 @@ from folium.plugins import MarkerCluster
 # Traffic data
 traffic_data = {
     "Location": ["Stop #1 Lansdowne Park"] * 12,
-    "Count": [61, 24, 11, 9, 17, 5, 28, 9, 1, 14, 25, 15],
+    "Count": [30.5, 12, 5.5, 4.5, 8.5, 2.5, 14, 4.5, 0.5, 7, 12.5, 7.5],
     "Longitude": [-75.68580531, -75.68068081, -75.68610983, -75.68449478, 
                   -75.6796243, -75.68421071, -75.6780816, -75.67975324, 
                   -75.68355528, -75.68651711, -75.6783432, -75.67955396],
@@ -17,15 +17,17 @@ traffic_data = {
 
 # Pedestrian data
 pedestrian_data = {
-    "Location": ["Stop #1 Lansdowne Park"] * 12,
-    "Count": [5, 14, 4, 6, 3, 3, 6, 2, 7, 2, 4, 18],
+    "Location": ["Stop #1 Lansdowne Park"] * 13,
+    "Count": [2.5, 7, 2, 3, 1.5, 1.5, 3, 1, 3.5, 1, 2, 9, 3],
     "Longitude": [-75.68570327, -75.68608501, -75.68573379, -75.685212, 
                   -75.68517646, -75.67992822, -75.68485444, -75.68461947, 
-                  -75.68473223, -75.68447114, -75.68381162, -75.6856984],
+                  -75.68473223, -75.68447114, -75.68381162, -75.6856984, 
+                  -75.6809709],
     "Latitude": [45.3994541, 45.39946985, 45.39958372, 45.400013, 
                  45.39968338, 45.39987131, 45.3999348, 45.40002635, 
-                 45.39998241, 45.40001867, 45.40034716, 45.3988238],
-    "Type": ["Pedestrian"] * 12
+                 45.39998241, 45.40001867, 45.40034716, 45.3988238, 
+                 45.4022448],
+    "Type": ["Pedestrian"] * 13
 }
 
 # Combine the traffic and pedestrian data
@@ -40,18 +42,18 @@ marker_cluster = MarkerCluster().add_to(m_clustered)
 
 # Function to set color based on traffic count (Updated red shades)
 def get_traffic_color(count):
-    if count < 10:
+    if count < 5:
         return 'lightred'  # Light Red for low traffic
-    elif 10 <= count < 20:
+    elif 5 <= count < 10:
         return 'red'  # Red for medium traffic
     else:
         return 'darkred'  # Dark Red for high traffic
 
 # Function to set color based on pedestrian count
 def get_pedestrian_color(count):
-    if count < 5:
+    if count < 3:
         return 'lightblue'
-    elif 5 <= count < 10:
+    elif 3 <= count < 6:
         return 'blue'
     else:
         return 'darkblue'
@@ -79,9 +81,9 @@ legend_html_traffic = """
             background-color: white; border:2px solid grey; z-index:9999;
             font-size: 16px; font-family: 'Helvetica', sans-serif; padding: 10px;">
     <b>Traffic Count Legend</b><br>
-    <i style="background-color:lightred; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Low (0-10)<br>
-    <i style="background-color:red; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Medium (11-20)<br>
-    <i style="background-color:darkred; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> High (21+)<br>
+    <i style="background-color:lightred; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Low (0-5)<br>
+    <i style="background-color:red; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Medium (5-10)<br>
+    <i style="background-color:darkred; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> High (10+)<br>
 </div>
 """
 
@@ -91,9 +93,9 @@ legend_html_pedestrian = """
             background-color: white; border:2px solid grey; z-index:9999;
             font-size: 16px; font-family: 'Helvetica', sans-serif; padding: 10px;">
     <b>Pedestrian Count Legend</b><br>
-    <i style="background-color:lightblue; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Low (0-5)<br>
-    <i style="background-color:blue; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Medium (6-10)<br>
-    <i style="background-color:darkblue; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> High (11+)<br>
+    <i style="background-color:lightblue; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Low (0-3)<br>
+    <i style="background-color:blue; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> Medium (3-6)<br>
+    <i style="background-color:darkblue; width: 18px; height: 18px; float: left; margin-right: 10px;"></i> High (6+)<br>
 </div>
 """
 

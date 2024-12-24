@@ -48,6 +48,18 @@ for entry in data:
     folium.CircleMarker([lat, lon], radius=12, color=color, fill=True, fill_opacity=0.6, 
                         popup=f"EQI: {index}").add_to(m)
 
+    # Add a 3m dotted circle around each point
+    folium.Circle(
+        location=[lat, lon],
+        radius=3,  # 3-meter radius
+        color=color,
+        fill=True,
+        fill_color=color,
+        fill_opacity=0.1,
+        weight=2,
+        dash_array='5, 5'  # Dotted pattern
+    ).add_to(m)
+
 # Add a legend to the map
 legend_html = """
      <div style="position: fixed; 
@@ -65,7 +77,7 @@ legend_html = """
 m.get_root().html.add_child(folium.Element(legend_html))
 
 # Save the map to an HTML file
-m.save('green_spaces_map_with_legend_and_labels_updated_v2.html')
+m.save('green_spaces_map_with_legend_and_labels_and_dotted_circles.html')
 
 # Print a message indicating the map has been saved
-print("Map with updated color scheme and legend has been saved as 'green_spaces_map_with_legend_and_labels_updated_v2.html'.")
+print("Map with updated color scheme, legend, labels, and dotted circles has been saved as 'green_spaces_map_with_legend_and_labels_and_dotted_circles.html'.")

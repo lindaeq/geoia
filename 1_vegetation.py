@@ -1,6 +1,6 @@
 import folium
 
-# Data for vegetation with coordinates and vegetation level
+
 data_vegetation = [
     (1, -75.68613185, 45.39945279),
     (1, -75.68625419, 45.39935236),
@@ -24,9 +24,7 @@ data_vegetation = [
     (1, -75.6833814, 45.40072861),
     (1, -75.68418563, 45.40009964),
     (2, -75.67955396, 45.40077915),
-    (1, -75.68597706, 45.39948261),
-    (1, -75.68556336, 45.39968055),
-    (1, -75.68538195, 45.39973718),
+    (1, -75.68863071, 45.41579986),
     (2, -75.68595844, 45.39934859),
     (1, -75.68563859, 45.39944785),
     (1, -75.68550569, 45.39954396),
@@ -34,16 +32,18 @@ data_vegetation = [
     (1, -75.68448107, 45.39994225),
     (0, -75.68362806, 45.40010625),
     (1, -75.68242241, 45.40059971),
+    (1, -75.68597706, 45.39948261),
+    (1, -75.68556336, 45.39968055),
+    (1, -75.68538195, 45.39973718),
     (1, -75.68479447, 45.39994539),
     (1, -75.68434807, 45.40016023),
     (0, -75.68363708, 45.40046189),
-    (1, -75.685945, 45.39982),
-    (1, -75.68863071, 45.41579986)
+    (1, -75.685945, 45.39982)
 ]
 
 # Function to determine the color based on the vegetation level
+# Function to determine the color based on the vegetation level
 def get_vegetation_color(level):
-    # Updated color scheme to match acceptable Folium colors
     if level == 0:
         return 'gray'  # No vegetation visible
     elif level == 1:
@@ -51,11 +51,12 @@ def get_vegetation_color(level):
     elif level == 2:
         return 'lightred'  # Little vegetation
     elif level == 3:
-        return 'yellow'  # Moderate vegetation
+        return 'lightgreen'  # Moderate vegetation
     elif level == 4:
         return 'green'  # High vegetation (Park)
     else:
-        return 'darkgreen'  # Very high vegetation
+        return 'darkgreen'  # Very high vegetation (if level exceeds 4)
+
 
 # Create a folium map centered around the same starting point (Lansdowne Park)
 map_center = [45.39945279, -75.68613185]
